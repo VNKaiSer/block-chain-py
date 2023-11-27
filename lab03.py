@@ -1,12 +1,28 @@
+import hashlib
+import time
 class Block: 
-    def __init__():
+    def __init__(self, index, proof_no, previous_hash, data, timestamp =None):
+        self.index = index
+        self.proof_no = proof_no
+        self.previous_hash = previous_hash
+        self.data = data
+        self.timestamp = timestamp or time.time()
         pass
-    def calculate_hash():
-        pass
-
+    @property
+    def calculate_hash(self):
+        string_hash = "{}{}{}{}{}".format(self.index, self.proof_no, 
+                                          self.previous_hash, self.data, 
+                                      self.timestamp)
+        return hashlib.sha256(string_hash.encode()).hexdigest()
+    def __repr__(self):
+        return "Block: {}-{}-{}-{}-{}".format(self.index, self.proof_no, 
+                                              self.previous_hash, self.data, 
+                                              self.timestamp)
 class BlockChain:
-    def __init__():
+    def __init__(self):
+        self.chain = []
         pass
+ 
     def contruct_genesis():
         pass
     
