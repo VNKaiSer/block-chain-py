@@ -21,6 +21,9 @@ class Block:
 class BlockChain:
     def __init__(self):
         self.chain = []
+        self.current_data = []
+        self.nodes = set()
+        self.contruct_genesis()
         pass
  
     def contruct_genesis():
