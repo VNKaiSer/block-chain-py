@@ -26,8 +26,18 @@ class BlockChain:
         self.contruct_genesis()
         pass
  
-    def contruct_genesis():
-        pass
+    def contruct_genesis(self):
+        self.contruct_block(proof_no = 0, previous_hash = 0)
+    
+    def contruct_block(self, proof_no, previous_hash):
+        block = Block(
+                        index = len(self.chain), 
+                        proof_no = proof_no, 
+                        previous_hash = previous_hash, 
+                        data = self.current_data)
+        self.current_data = []
+        self.chain.append(block)
+        return block
     
     @staticmethod
     def check_validity():
