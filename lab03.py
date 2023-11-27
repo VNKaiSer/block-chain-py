@@ -40,8 +40,17 @@ class BlockChain:
         return block
     
     @staticmethod
-    def check_validity():
-        pass
+    def check_validity(block, prev_block):
+        if prev_block.index + 1 != block.index: 
+            return False;
+        elif prev_block.calculate_hash != block.previous_hash:
+            return False
+        elif not BlockChain.verify_proof(block.proof_no, prev_block.proof_no):  # type: ignore
+            return False
+        elif block.timestamp <= prev_block.timestamp: 
+            return False
+        return True
+
     def new_data(self, sender, recipient, amount):
         pass
     @staticmethod
@@ -50,4 +59,9 @@ class BlockChain:
     @property
     def last_block(self):
         return self.chain[-1]
+    @staticmethod
+    def verify_proof(proof, last_proof):
+        guess = f'{proof}{last_proof}'.encode()
+        guess_hash = hashlib.sha256(guess).hexdigest()
+        return guess_hash[:4] == "0000"
     
