@@ -27,9 +27,9 @@ class BlockChain:
         pass
  
     def contruct_genesis(self):
-        self.contruct_block(proof_no = 0, previous_hash = 0)
+        self.construct_block(proof_no = 0, previous_hash = 0)
     
-    def contruct_block(self, proof_no, previous_hash):
+    def construct_block(self, proof_no, previous_hash):
         block = Block(
                         index = len(self.chain), 
                         proof_no = proof_no, 
@@ -52,16 +52,78 @@ class BlockChain:
         return True
 
     def new_data(self, sender, recipient, amount):
-        pass
+        self.current_data.append({
+            'sender': sender,
+            'recipient': recipient,
+            'amount': amount
+        })
+        return True
     @staticmethod
-    def contruct_proof_of_work():
-        pass
+    def proof_of_work(last_proof):
+        proof_no = 0
+        while BlockChain.verify_proof(proof_no, last_proof) is False:
+            proof_no += 1
+        return proof_no
     @property
-    def last_block(self):
+    def latest_block(self):
         return self.chain[-1]
     @staticmethod
     def verify_proof(proof, last_proof):
         guess = f'{proof}{last_proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
         return guess_hash[:4] == "0000"
+    
+    def block_mining(self, detail_miner): 
+        
+        self.new_data(
+            sender="0",
+            recipient=detail_miner,
+            amount=1
+        )
+        
+        last_block = self.latest_block
+        
+        last_proof_no = last_block.proof_no
+        proof_no = self.proof_of_work(last_proof_no)
+        block = self.construct_block(proof_no, last_block.calculate_hash)
+        vars(block)['timestamp'] = time.time()
+        
+    def create_node(self, address):
+        self.nodes.add(address)
+        return True
+
+    @staticmethod
+    def obtain_block_object(block_data):
+        #obtains block object from the block data
+
+        return Block(
+            block_data['index'],
+            block_data['proof_no'],
+            block_data['prev_hash'],
+            block_data['data'],
+            timestamp=block_data['timestamp'])
+
+
+# Test blockchain
+blockchain = BlockChain()
+
+print("***Mining fccCoin about to start***")
+print(blockchain.chain)
+
+last_block = blockchain.latest_block
+last_proof_no = last_block.proof_no
+proof_no = blockchain.proof_of_work(last_proof_no)
+
+blockchain.new_data(
+    sender="0",
+    recipient="Quincy Larson",
+    amount=
+    1,  
+)
+
+last_hash = last_block.calculate_hash
+block = blockchain.construct_block(proof_no, last_hash)
+
+print("***Mining fccCoin has been successful***")
+print(blockchain.chain)
     
